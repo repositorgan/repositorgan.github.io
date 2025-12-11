@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andrew Kieckhefer+</title>
+    
+    <!-- Google Analytics 4 (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T3KZQ3ZHK9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        // Initialize GA4 with enhanced measurement
+        gtag('config', 'G-T3KZQ3ZHK9', {
+            'send_page_view': true,
+            'allow_google_signals': true,
+            'allow_ad_personalization_signals': false,
+            'anonymize_ip': true
+        });
+    </script>
+    
     <!-- Google Fonts: Professional, clean fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
     <style>
@@ -523,7 +540,7 @@
             
             <div class="gpt-container">
                 <p style="margin-bottom: 20px; color: var(--gray-600);">
-                    Ask me anything using AI-powered search. Perfect for exploring ideas and discovering information.
+                    Welcome to Andy@ Artificial Intel powered chat.
                 </p>
                 
                 <div class="cli-terminal">
@@ -532,12 +549,12 @@
                         <div class="cli-dot cli-dot-red"></div>
                         <div class="cli-dot cli-dot-yellow"></div>
                         <div class="cli-dot cli-dot-green"></div>
-                        <span class="cli-title">gpt-search</span>
+                        <span class="cli-title">Generative Pre-trained Transformer, (GPT)</span>
                     </div>
                     
                     <!-- Terminal output -->
                     <div class="cli-output" id="cliOutput">
-                        <div class="cli-prompt">$ Welcome to GPT Search. Ask me anything to get started.</div>
+                        <div class="cli-prompt">$ Please, enjoy this power tool. Don't be shy.</div>
                         
                         <!-- Input line -->
                         <div class="cli-input-line">
@@ -546,7 +563,7 @@
                                 type="text" 
                                 class="cli-input" 
                                 id="cliInput"
-                                placeholder="What would you like to know?"
+                                placeholder="Tell me what's on your mind."
                                 autocomplete="off"
                             />
                         </div>
@@ -605,18 +622,170 @@
     </div>
 
     <!-- ========================================
-         JAVASCRIPT - GPT CLI FUNCTIONALITY
+         JAVASCRIPT - GPT CLI FUNCTIONALITY & ANALYTICS
     ======================================== -->
     <script>
         const cliInput = document.getElementById('cliInput');
         const cliOutput = document.getElementById('cliOutput');
-        let conversationHistory = [];
 
-        // Handle Enter key
+        // ========================================
+        // ANALYTICS HELPER FUNCTIONS
+        // ========================================
+        
+        // Track custom events to Google Analytics
+        function trackEvent(eventName, eventParams) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', eventName, eventParams);
+            }
+            console.log('Analytics Event:', eventName, eventParams);
+        }
+
+        // Track scroll depth
+        let maxScroll = 0;
+        let scrollMilestones = [25, 50, 75, 100];
+        let reachedMilestones = new Set();
+
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollPercent = Math.round((scrollTop / (documentHeight - windowHeight)) * 100);
+            
+            if (scrollPercent > maxScroll) {
+                maxScroll = scrollPercent;
+                
+                // Track milestone scrolls
+                scrollMilestones.forEach(milestone => {
+                    if (scrollPercent >= milestone && !reachedMilestones.has(milestone)) {
+                        reachedMilestones.add(milestone);
+                        trackEvent('scroll_depth', {
+                            'depth_percentage': milestone,
+                            'page_location': window.location.href
+                        });
+                    }
+                });
+            }
+        });
+
+        // Track time on page
+        let pageStartTime = Date.now();
+        let timeIntervals = [10, 30, 60, 120, 300]; // seconds
+        let timeTracked = new Set();
+
+        setInterval(() => {
+            const timeOnPage = Math.floor((Date.now() - pageStartTime) / 1000);
+            timeIntervals.forEach(interval => {
+                if (timeOnPage >= interval && !timeTracked.has(interval)) {
+                    timeTracked.add(interval);
+                    trackEvent('time_on_page', {
+                        'seconds': interval,
+                        'page_location': window.location.href
+                    });
+                }
+            });
+        }, 5000); // Check every 5 seconds
+
+        // Track referrer source
+        if (document.referrer) {
+            trackEvent('visitor_source', {
+                'referrer': document.referrer,
+                'referrer_domain': new URL(document.referrer).hostname
+            });
+        } else {
+            trackEvent('visitor_source', {
+                'referrer': 'direct_traffic',
+                'referrer_domain': 'none'
+            });
+        }
+
+        // ========================================
+        // NAVIGATION CLICK TRACKING
+        // ========================================
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                trackEvent('navigation_click', {
+                    'link_text': e.target.textContent,
+                    'link_url': e.target.getAttribute('href'),
+                    'click_location': 'navbar'
+                });
+            });
+        });
+
+        // Track logo clicks
+        document.querySelector('.nav-logo').addEventListener('click', () => {
+            trackEvent('logo_click', {
+                'action': 'return_to_top'
+            });
+        });
+
+        // ========================================
+        // SOCIAL LINK TRACKING
+        // ========================================
+        
+        document.querySelectorAll('.social-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                trackEvent('social_link_click', {
+                    'platform': e.target.textContent,
+                    'link_url': e.target.getAttribute('href')
+                });
+            });
+        });
+
+        // ========================================
+        // PROJECT/SAMPLE LINK TRACKING
+        // ========================================
+        
+        document.querySelectorAll('.project-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const projectTitle = e.target.closest('.project').querySelector('h3').textContent;
+                trackEvent('project_click', {
+                    'project_name': projectTitle,
+                    'project_url': e.target.getAttribute('href')
+                });
+            });
+        });
+
+        // ========================================
+        // SECTION VIEW TRACKING (Intersection Observer)
+        // ========================================
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    const sectionTitle = entry.target.querySelector('h2')?.textContent || sectionId;
+                    trackEvent('section_view', {
+                        'section_id': sectionId,
+                        'section_title': sectionTitle
+                    });
+                }
+            });
+        }, { threshold: 0.5 }); // Trigger when 50% of section is visible
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // ========================================
+        // GPT CLI FUNCTIONALITY WITH TRACKING
+        // ========================================
+        
+        let gptQueryCount = 0;
+
         cliInput.addEventListener('keypress', async (e) => {
             if (e.key === 'Enter' && cliInput.value.trim()) {
                 const userQuery = cliInput.value.trim();
+                gptQueryCount++;
                 cliInput.value = '';
+                
+                // Track GPT query
+                trackEvent('gpt_query', {
+                    'query_text': userQuery,
+                    'query_number': gptQueryCount,
+                    'query_length': userQuery.length
+                });
                 
                 // Display user query
                 const userLine = document.createElement('div');
@@ -630,6 +799,8 @@
                 loadingLine.textContent = '$ Searching...';
                 cliOutput.appendChild(loadingLine);
                 cliOutput.scrollTop = cliOutput.scrollHeight;
+                
+                const queryStartTime = Date.now();
                 
                 try {
                     // Call Claude API
@@ -650,7 +821,13 @@
                         })
                     });
 
+                    // Check if response is ok
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
+                    const responseTime = Date.now() - queryStartTime;
                     
                     // Remove loading
                     loadingLine.remove();
@@ -665,19 +842,44 @@
                             .map(item => item.text)
                             .join('\n');
                         responseLine.textContent = text;
+                        
+                        // Track successful GPT response
+                        trackEvent('gpt_response_success', {
+                            'query_text': userQuery,
+                            'response_length': text.length,
+                            'response_time_ms': responseTime,
+                            'query_number': gptQueryCount
+                        });
                     } else {
                         responseLine.textContent = 'Sorry, I could not process that request.';
+                        trackEvent('gpt_response_empty', {
+                            'query_text': userQuery
+                        });
                     }
                     
                     cliOutput.appendChild(responseLine);
                     
                 } catch (error) {
+                    // Remove loading
                     loadingLine.remove();
+                    
+                    // Track GPT error
+                    trackEvent('gpt_error', {
+                        'query_text': userQuery,
+                        'error_message': error.message,
+                        'query_number': gptQueryCount
+                    });
+                    
+                    // Display detailed error
                     const errorLine = document.createElement('div');
                     errorLine.className = 'cli-response';
                     errorLine.style.color = '#ff6b6b';
-                    errorLine.textContent = 'Error: Unable to connect to GPT service. Please try again.';
+                    errorLine.innerHTML = `<strong>Error Details:</strong><br>
+                        ${error.message}<br><br>
+                        <em>Note: The GPT feature uses Claude's API which is available in this artifact environment.</em>`;
                     cliOutput.appendChild(errorLine);
+                    
+                    console.error('GPT Error:', error);
                 }
                 
                 // Scroll to bottom
@@ -685,7 +887,17 @@
             }
         });
 
-        // Smooth scroll for navigation
+        // Track GPT input focus (user interest)
+        cliInput.addEventListener('focus', () => {
+            trackEvent('gpt_input_focus', {
+                'action': 'user_started_typing'
+            });
+        });
+
+        // ========================================
+        // SMOOTH SCROLL WITH TRACKING
+        // ========================================
+        
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -693,6 +905,29 @@
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+            });
+        });
+
+        // ========================================
+        // PAGE EXIT TRACKING
+        // ========================================
+        
+        window.addEventListener('beforeunload', () => {
+            const totalTimeOnPage = Math.floor((Date.now() - pageStartTime) / 1000);
+            trackEvent('page_exit', {
+                'total_time_seconds': totalTimeOnPage,
+                'max_scroll_percent': maxScroll,
+                'gpt_queries_made': gptQueryCount
+            });
+        });
+
+        // ========================================
+        // TRACK PAGE LOAD COMPLETE
+        // ========================================
+        
+        window.addEventListener('load', () => {
+            trackEvent('page_load_complete', {
+                'load_time_ms': performance.now()
             });
         });
     </script>
