@@ -1,6 +1,6 @@
 ## Website Example 
 
-**Purpose of this website is to measure user interaction 
+**Purpose of this website is to measure user interaction**
 
 > Report user interaction with website offerings
 
