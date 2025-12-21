@@ -1,3 +1,4 @@
+<!-- Default webpage content
 <!DOCTYPE html> 
 <html> 
   <head> 
@@ -7,4 +8,35 @@
     <h1>Page Status</h1>
     <p>Game coming soon.</p>
   </body> 
+</html>
+--> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bubble Pop Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>🫧 Bubble Pop</h1>
+  <div id="stats">
+    <span>Score: <strong id="score">0</strong></span>
+    <span>Popped: <strong id="popped">0</strong></span>
+    <span>Accuracy: <strong id="accuracy">100%</strong></span>
+    <span>Time: <strong id="time">0</strong>s</span>
+  </div>
+</header>
+
+<main id="game-area"></main>
+
+<footer>
+  <p>Pop as many bubbles as you can!</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
 </html>
